@@ -2,7 +2,7 @@ import os
 import re
 
 
-class File():
+class File:
 
     # Construct class and basic set of properties
     def __init__(self, path_name: str, long_name: str):
@@ -29,14 +29,14 @@ class File():
         return name
 
 
-def matchBackup(start_path: str, omit_path: str, familyModel: bool = True) -> list[str]:
-    matching_files: list[str] = []
+def matchBackup(start_path: str, omit_path: str, familyModel: bool = True) -> list[list[str | int]]:
+    matching_backup_files: list[list[str | int]] = []
     for root, dirName, fileName in os.walk(start_path):
         for file in fileName:
-            temp: str = File(root, file)
+            temp: File = File(root, file)
             if temp.isBackup(familyModel) and omit_path not in root.lower():
-                matching_files.append([os.path.join(root, file), temp.long_name, temp.size])
-    return matching_files
+                matching_backup_files.append([os.path.join(root, file), temp.long_name, temp.size])
+    return matching_backup_files
 
 
 def convertBytes(number: int) -> str:
@@ -51,8 +51,8 @@ def delFile(dir_file_name: str, enabler: bool = False) -> str:
         try:
             os.remove(dir_file_name)
             return "removed successfully."
-        except Exception:
-            return "failed to remove."
+        except IOError as error:
+            return f"failed to remove, because of:\n{error}"
     else:
         return "omitted."
 
@@ -70,12 +70,14 @@ def printLines(content: list[str], separator: str = '*', spaces: int = 4, exclus
     print(header + "\n")
 
 
+# ***************************************************************************
 # CALL FUNCTIONS WITH THE USER INPUT
+# ***************************************************************************
 declaration: list[str] = ["the script removes recursively revit backup files.",
                           "it starts from the given folder and \"walks\" through",
                           "the nested directories. it omits backup files in the",
                           "exclusion folder. \"archive\" is the default exclusion.",
-                          "wojciech.klepacki@grimshaw.global, 2018-2023"]
+                          "wklepa@gmail.com, v.2.0, 2018-2023"]
 
 printLines(declaration)
 
@@ -91,7 +93,7 @@ if get_family_model == "y":
 if get_del_confirmation == "r":
     enabler_del: bool = True
 if get_dir_to_omit:
-    default_omit = get_dir_to_omit
+    default_omit: str = get_dir_to_omit
 if os.path.isdir(get_start_dir):
     total_size: list[int] = []
     matching_files: list = matchBackup(get_start_dir, default_omit, enabler_model)
