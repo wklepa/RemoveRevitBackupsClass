@@ -73,15 +73,16 @@ def printLines(content: list[str], separator: str = '*', spaces: int = 4, exclus
 # ***************************************************************************
 # CALL FUNCTIONS WITH THE USER INPUT
 # ***************************************************************************
+default_omit: str = "archive"
+
 declaration: list[str] = ["the script removes recursively revit backup files.",
                           "it starts from the given folder and \"walks\" through",
                           "the nested directories. it omits backup files in the",
-                          "exclusion folder. \"archive\" is the default exclusion.",
+                          f"exclusion folder. \"{default_omit}\" is the default exclusion.",
                           "wklepa@gmail.com, v.2.0, 2018-2023"]
 
 printLines(declaration)
 
-default_omit: str = "archive"
 enabler_model: bool = False
 enabler_del: bool = False
 get_start_dir: str = input("Enter the folder name to start: ")
